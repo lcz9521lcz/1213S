@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加商品</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label>
+                    ID:
+                    <input type="text" v-model="id" class="form-control">
+                </label>
+                <label>
+                    name:
+                    <input type="text" v-model="name" class="form-control">
+                </label>
+                <input type="button" value="添加" @click="add" class="btn btn-danger">
+                <label>
+                    搜索关键名称字:
+                    <input type="text" v-model="keywords" class="form-control">
+                </label>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Ctime</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 自定义search方法 -->
+                <!-- 在使用v-for时加上 :key 属性绑定, 绑定的值为每项数据的唯一标识 -->
+                <tr v-for="item in search(keywords)" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.ctime}}</td>
+                    <td>
+                        <a href="javascript:;" @click="del(item.id)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                id: '',
+                name: '',
+                keywords: '',
+                list: [
+                    { id: 1, name: '奔驰', ctime: new Date() },
+                    { id: 2, name: '宝马', ctime: new Date() }
+                ]
+            },
+            methods: {
+                add() {
+                    //判断用户输入的内容是否为空
+                    if (!this.id.trim() || !this.name.trim()) {
+                        alert('请输入完整信息')
+                        return
+                    }
+                    let car = { id: this.id, name: this.name, ctime: new Date() }
+                    this.list.push(car)
+                    this.id = this.name = ''
+                },
+                del(id) {
+                    // console.log(id)
+                    let index = this.list.findIndex(item => {
+                        if (item.id == id) {
+                            return true
+                        }
+                    })
+                    // console.log(index)
+                    this.list.splice(index, 1)//删除数组元素
+                },
+                search(keywords) {
+                    return this.list.filter(item => {
+                        if (item.name.includes(keywords)) {
+                            return item
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
