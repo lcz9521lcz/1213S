@@ -8,13 +8,14 @@
     <title>Document</title>
     <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
     <script src="./lib/vue-2.4.0.js"></script>
+    <script src="./lib/moment.js"></script>
 </head>
 
 <body>
     <div id="app">
         <div class="panel panel-danger">
             <div class="panel-heading">
-                <h3 class="panel-title">添加商品</h3>
+                <h3 class="panel-title">新增英雄</h3>
             </div>
             <div class="panel-body form-inline">
                 <label>
@@ -23,12 +24,12 @@
                 </label>
                 <label>
                     name:
-                    <input type="text" v-model="name" class="form-control">
+                    <input type="text" v-model="name" class="form-control" @keyup.f2="add">
                 </label>
                 <input type="button" value="添加" @click="add" class="btn btn-danger">
                 <label>
-                    搜索关键名称字:
-                    <input type="text" v-model="keywords" class="form-control">
+                    搜索关键字:
+                    <input type="text" v-model="keywords" class="form-control" v-focus>
                 </label>
             </div>
         </div>
@@ -48,7 +49,7 @@
                 <tr v-for="item in search(keywords)" :key="item.id">
                     <td>{{item.id}}</td>
                     <td>{{item.name}}</td>
-                    <td>{{item.ctime}}</td>
+                    <td>{{item.ctime | dateFormat()}}</td>
                     <td>
                         <a href="javascript:;" @click="del(item.id)">删除</a>
                     </td>
@@ -56,7 +57,33 @@
             </tbody>
         </table>
     </div>
+
+    <div id="sun">
+        <p v-color="'purple'" v-fontsize="55">{{ dt | dateFormat }}</p>
+    </div>
     <script>
+        //定义一个全局过滤器---获取想要的时间格式
+        Vue.filter('dateFormat', () =>
+            moment().format('YYYY-MM-DD / HH:mm:ss')
+        )
+
+        //自定义一个指令获取焦点
+        Vue.directive('focus', {
+            inserted(el) {
+                el.focus()
+            }
+        })
+
+        //自定义一个设置字体颜色的指令
+        Vue.directive('color', {
+            bind(el, binding) {
+                el.style.color = binding.value
+            }
+        })
+
+        //自定义全局按键修饰符
+        Vue.config.keyCodes.f2 = 113
+
         var vm = new Vue({
             el: '#app',
             data: {
@@ -64,8 +91,8 @@
                 name: '',
                 keywords: '',
                 list: [
-                    { id: 1, name: '奔驰', ctime: new Date() },
-                    { id: 2, name: '宝马', ctime: new Date() }
+                    { id: 1, name: '寒冰', ctime: new Date() },
+                    { id: 2, name: '德玛', ctime: new Date() }
                 ]
             },
             methods: {
@@ -75,8 +102,8 @@
                         alert('请输入完整信息')
                         return
                     }
-                    let car = { id: this.id, name: this.name, ctime: new Date() }
-                    this.list.push(car)
+                    let hero = { id: this.id, name: this.name, ctime: new Date() }
+                    this.list.push(hero)
                     this.id = this.name = ''
                 },
                 del(id) {
@@ -95,6 +122,25 @@
                             return item
                         }
                     })
+                }
+            }
+        })
+
+        var vm1 = new Vue({
+            el: '#sun',
+            data: {
+                dt: new Date()
+            },
+            filters: {
+                //定义一个私有过滤器
+                dateFormat() {
+                    return moment().format('YYYY-MM-DD / HH:mm:ss~~~~~~~~~~')
+                }
+            },
+            directives: {
+                //自定义一个设置字体大小的指令
+                fontsize(el, binding) {
+                    el.style.fontSize = parseInt(binding.value) + 'px'
                 }
             }
         })
