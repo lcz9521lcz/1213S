@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        li{
+            list-style: none;
+            border: 1px dashed #999;
+            width: 100%;
+            text-align: center;
+            line-height: 51px;
+            margin: 6px
+        }
+        li:hover{
+            background-color: hotpink;
+            transition: all .6s linear
+        }
+        .v-enter,
+        .v-leave-to{
+            opacity: 0;
+            transform: translateY(99px)
+        }
+        .v-enter-active,
+        .v-leave-active{
+            transition: all 1.3s linear
+        }
+    </style>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+    <script src="./lib/vue-2.4.0.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="panel panel-danger form-inline">
+            <div class="panel-heading">
+                <h3 class="panel-title">历史人物</h3>
+            </div>
+            <div class="panel-body">
+                <label>
+                    id:
+                    <input type="text" v-model="id" class="form-control">
+                </label>
+                <label>
+                    name:
+                    <input type="text" v-model="name" class="form-control">
+                </label>
+                <input type="button" value="添加" @click="add" class="btn btn-danger">
+            </div>
+        </div>
+
+        <div class="container">
+            <transition-group appear tag="ul">
+                <li v-for="item in list" :key="item.id" @click="del(item.id)">
+                    {{ item.id }} ------ {{ item.name }}
+                </li>
+            </transition-group>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                id: '',
+                name: '',
+                list: [
+                    { id: 1, name: '寒冰', ctime: new Date() },
+                    { id: 2, name: '德玛', ctime: new Date() },
+                    { id: 3, name: '九尾', ctime: new Date() }
+                ]
+            },
+            methods: {
+                add() {
+                    if (!this.id.trim() || !this.name.trim()) {
+                        alert('请输入完整的信息')
+                        return
+                    }
+                    this.list.push({ id: this.id, name: this.name, ctime: new Date() })
+                    this.id = this.name = ''
+                },
+                del(id) {
+                    let index = this.list.findIndex(item => {
+                        if (item.id == id) {
+                            return true
+                        }
+                    })
+                    this.list.splice(index, 1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
