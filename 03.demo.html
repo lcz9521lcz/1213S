@@ -5,18 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>计数器</title>
     <script src="./lib/vue-2.4.0.js"></script>
 </head>
 
 <body>
     <div id="app">
+        <count></count>
+        <hr>
+        <count></count>
+        <hr>
+        <count></count>
+        <hr>
     </div>
+
+    <template id="count">
+        <div>
+            <input type="button" value="加1" @click=add>
+            <p>{{ num }}</p>
+        </div>
+    </template>
     <script>
         var vm = new Vue({
             el: '#app',
             data: {},
-            methods: {}
+            methods: {},
+            components: {
+                count: {
+                    template: '#count',
+                    data() {
+                        return {
+                            num: 0
+                        }
+                    },
+                    methods: {
+                        add() {
+                            this.num++
+                        }
+                    }
+                }
+            }
         })
     </script>
 </body>
